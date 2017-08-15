@@ -17,6 +17,7 @@ redis作为celery的broker并且设置了密码。
 [基于Arachni构建黑盒扫描平台](http://bobao.360.cn/learning/detail/3533.html)
 [wyproxy](https://github.com/ring04h/wyproxy)
 [Arachni](https://github.com/Arachni/arachni/wiki/REST-API)
+[arachni-python-client](https://github.com/yukito/arachni-python-client)
 
 ## English
 This is a passive scanner based on Mitmproxy and Arachni.
@@ -33,3 +34,4 @@ Reference link
 [Based on Arachni build black box scanning platform](http://bobao.360.cn/learning/detail/3533.html)
 [Wyproxy](https://github.com/ring04h/wyproxy)
 [Arachni](https://github.com/Arachni/arachni/wiki/REST-API)
+[arachni-python-client](https://github.com/yukito/arachni-python-client)
