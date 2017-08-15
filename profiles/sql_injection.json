@@ -1,0 +1,79 @@
+{
+  "scope" : {
+    "redundant_path_patterns" : {},
+    "dom_depth_limit" : 5,
+    "exclude_file_extensions" : [],
+    "exclude_path_patterns" : [],
+    "exclude_content_patterns" : [],
+    "include_path_patterns" : [],
+    "restrict_paths" : [],
+    "extend_paths" : [],
+    "url_rewrites" : {}
+  },
+  "datastore" : {},
+  "http" : {
+    "user_agent" : "Arachni/v1.4",
+    "request_timeout" : 10000,
+    "request_redirect_limit" : 5,
+    "request_concurrency" : 20,
+    "request_queue_size" : 100,
+    "request_headers" : {},
+    "response_max_size" : 500000,
+    "cookies" : {}
+  },
+  "audit" : {
+    "parameter_values" : true,
+    "exclude_vector_patterns" : [],
+    "include_vector_patterns" : [],
+    "link_templates" : [],
+    "links" : true,
+    "forms" : true,
+    "cookies" : true,
+    "jsons" : true,
+    "xmls" : true,
+    "ui_forms" : true,
+    "ui_inputs" : true
+  },
+  "session" : {},
+  "browser_cluster" : {
+    "local_storage" : {},
+    "wait_for_elements" : {},
+    "pool_size" : 6,
+    "job_timeout" : 25,
+    "worker_time_to_live" : 100,
+    "ignore_images" : false,
+    "screen_width" : 1600,
+    "screen_height" : 1200
+  },
+  "input" : {
+    "values" : {
+      "name" : "arachni_name",
+      "user" : "arachni_user",
+      "usr" : "arachni_user",
+      "pass" : "5543!%arachni_secret",
+      "txt" : "arachni_text",
+      "num" : "132",
+      "amount" : "100",
+      "mail" : "arachni@email.gr",
+      "account" : "12",
+      "id" : "1"
+    },
+    "without_defaults" : true,
+    "force" : false
+  },
+  "checks" : [
+    "sql_injection",
+    "sql_injection_differential",
+    "sql_injection_timing"
+  ],
+  "platforms" : [],
+  "plugins" : {
+    "autothrottle" : {},
+    "discovery" : {},
+    "healthmap" : {},
+    "timing_attacks" : {},
+    "uniformity" : {}
+  },
+  "no_fingerprinting" : false,
+  "authorized_by" : null
+}
