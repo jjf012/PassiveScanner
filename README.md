@@ -24,14 +24,14 @@ This is a passive scanner based on Mitmproxy and Arachni.
 * Celery
 * Mitmproxy
 
-! [Basic flow chart .png] (https://github.com/jjf012/PassiveScanner/images/process.png)
+![Basic flow chart .png](https://github.com/jjf012/PassiveScanner/raw/master/images/process.png)
 
 Which in order to be able to `celery` run on windows, I chose the version is 3.1.25.
 Redis as celery broker and set the password.
 Start worker with `celery -A scan worker - loglevel = info`.
 The default port for `proxy.py` is 8080.
 
-! [Mysql.png] (https://github.com/jjf012/PassiveScanner/images/mysql.png)
+![Mysql.png](https://github.com/jjf012/PassiveScanner/raw/master/images/mysql.png)
 
 Reference link
 [Based on Arachni build black box scanning platform] (http://bobao.360.cn/learning/detail/3533.html)
