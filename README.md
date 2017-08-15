@@ -4,14 +4,14 @@
 * celery
 * mitmproxy
 
-![基本流程图.png](https://github.com/jjf012/PassiveScanner/images/process.png)
+![基本流程图.png](https://github.com/jjf012/PassiveScanner/raw/master/images/process.png)
 
 其中为了能够让`celery`运行在windows上面，我选择的版本是3.1.25。
 redis作为celery的broker并且设置了密码。
 通过`celery -A scan worker --loglevel=info`启动worker。
 `proxy.py`的默认端口是8080。
 
-![mysql.png](https://github.com/jjf012/PassiveScanner/images/mysql.png)
+![mysql.png](https://github.com/jjf012/PassiveScanner/raw/master/images/mysql.png)
 
 参考链接
 [基于Arachni构建黑盒扫描平台](http://bobao.360.cn/learning/detail/3533.html)
