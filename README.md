@@ -14,6 +14,9 @@ redis作为celery的broker并且设置了密码。
 ![mysql.png](https://github.com/jjf012/PassiveScanner/raw/master/images/mysql.png)
 
 **更新**
+
+2017/8/16
+增加vuln.sql数据库结构文件
 调整parser里面一些冗余的代码
 将后缀判断移到proxy代码里面
 增加简单的去重功能，归一化后然后hash计算
@@ -35,7 +38,10 @@ Redis as celery broker and set the password.
 Start worker with `celery -A scan worker - loglevel = info`.
 The default port for `proxy.py` is 8080.
 
-** update **
+**update**
+
+2017/8/16
+add vuln.sql
 Adjust the parser inside some of the redundant code
 Move the suffix judgment to the proxy code
 Increase url, normalized and then hash calculation
