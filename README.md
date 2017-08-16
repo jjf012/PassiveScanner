@@ -13,11 +13,16 @@ redis作为celery的broker并且设置了密码。
 
 ![mysql.png](https://github.com/jjf012/PassiveScanner/raw/master/images/mysql.png)
 
+**更新**
+调整parser里面一些冗余的代码
+将后缀判断移到proxy代码里面
+增加简单的去重功能，归一化后然后hash计算
+
 参考链接
-[基于Arachni构建黑盒扫描平台](http://bobao.360.cn/learning/detail/3533.html)
-[wyproxy](https://github.com/ring04h/wyproxy)
-[Arachni](https://github.com/Arachni/arachni/wiki/REST-API)
-[arachni-python-client](https://github.com/yukito/arachni-python-client)
+* [基于Arachni构建黑盒扫描平台](http://bobao.360.cn/learning/detail/3533.html)
+* [wyproxy](https://github.com/ring04h/wyproxy)
+* [Arachni](https://github.com/Arachni/arachni/wiki/REST-API)
+* [arachni-python-client](https://github.com/yukito/arachni-python-client)
 
 ## English
 This is a passive scanner based on Mitmproxy and Arachni.
@@ -30,8 +35,13 @@ Redis as celery broker and set the password.
 Start worker with `celery -A scan worker - loglevel = info`.
 The default port for `proxy.py` is 8080.
 
+** update **
+Adjust the parser inside some of the redundant code
+Move the suffix judgment to the proxy code
+Increase url, normalized and then hash calculation
+
 Reference link
-[Based on Arachni build black box scanning platform](http://bobao.360.cn/learning/detail/3533.html)
-[Wyproxy](https://github.com/ring04h/wyproxy)
-[Arachni](https://github.com/Arachni/arachni/wiki/REST-API)
-[arachni-python-client](https://github.com/yukito/arachni-python-client)
+* [Based on Arachni build black box scanning platform](http://bobao.360.cn/learning/detail/3533.html)
+* [Wyproxy](https://github.com/ring04h/wyproxy)
+* [Arachni](https://github.com/Arachni/arachni/wiki/REST-API)
+* [arachni-python-client](https://github.com/yukito/arachni-python-client)

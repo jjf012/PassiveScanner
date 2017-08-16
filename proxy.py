@@ -8,56 +8,85 @@
 """
 import argparse
 import logging
-import json
-import urllib.request
-# from arachni import ArachniClient
-# from config import scan_server
-from utils.parser import ResponseParser
-from scan import scan_run
-# from lib.database import MYSQL
 from pprint import pprint
 from mitmproxy import controller, options, master
 from mitmproxy.proxy import ProxyServer, ProxyConfig
+from config import media_types, static_files, static_ext
+from scan import scan_run
+from utils.parser import ResponseParser
+from utils.utils import get_url_hash
 
 logging.basicConfig(
-    level=logging.WARNING,  # filename='/tmp/wyproxy.log',
+    level=logging.INFO,  # filename='/tmp/wyproxy.log',
     format='%(asctime)s [%(levelname)s] %(message)s',
 )
 
 
 class MyMaster(master.Master):
+    def __init__(self, *args, **kwargs):
+        super(MyMaster, self).__init__(*args, **kwargs)
+        self.url_seen = set()
+
     def run(self):
         try:
+            logging.info("proxy started successfully...")
             master.Master.run(self)
         except KeyboardInterrupt:
+            logging.info("Ctrl C - stopping proxy")
             self.shutdown()
+
+    def get_extension(self, flow):
+        if not flow.request.path_components:
+            return ''
+        else:
+            end_path = flow.request.path_components[-1:][0]
+            split_ext = end_path.split('.')
+            if not split_ext or len(split_ext) == 1:
+                return ''
+            else:
+                return split_ext[-1:][0][:32]
+
+    def capture_pass(self, flow):
+        """if content_type is media_types or static_files, then pass captrue"""
+
+        extension = self.get_extension(flow)
+        if extension in static_ext:
+            return True
+
+        # can't catch the content_type
+        content_type = flow.response.headers.get('Content-Type', '').split(';')[:1][0]
+        if not content_type:
+            return False
+
+        if content_type in static_files:
+            return True
+
+        http_mime_type = content_type.split('/')[:1]
+        if http_mime_type:
+            return True if http_mime_type[0] in media_types else False
+        else:
+            return False
 
     @controller.handler
     def request(self, f):
-        pass
-        # print("request", f)
+        pprint(f.request.path_components)
 
     @controller.handler
     def response(self, f):
-        # print("response", f)
         try:
-            if _domain in f.request.host:
-                # pprint(f)
-                parser = ResponseParser(f)
-                result = parser.parser_data()
-                task_id = scan_run.delay(result['url'], headers=result['request_header'],
-                                         post_data=result['request_content'] or "")
-                print(task_id)
-                # request = urllib.request.Request(scan_server + '/scan', json.dumps({
-                #     "url": result['url'],
-                #     "headers": result['request_header'],
-                #     "content": result['request_content'] or ""
-                # }).encode('utf8'))
-                # request.add_header('Content-Type', 'application/json')
-                # urllib.request.urlopen(request)
-                # 准备celery
-                # mysqldb_io = MysqlInterface()
-                # mysqldb_io.insert_result(result)
+            # if _domain in f.request.host:
+            if not self.capture_pass(f):
+                url_id = get_url_hash(f.request.url, f.request.content)
+                if url_id in self.url_seen:
+                    pass
+                else:
+                    self.url_seen.add(url_id)
+                    parser = ResponseParser(f)
+                    result = parser.parser_data()
+                    pprint(result)
+                    task_id = scan_run.delay(result['url'], headers=result['request_header'],
+                                             post_data=result['request_content'] or "")
+                    print(task_id)
         except Exception as e:
             logging.error(e)
 

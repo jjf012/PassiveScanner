@@ -20,7 +20,7 @@ save_content = True
 http_mimes = ['text', 'image', 'application', 'video', 'message', 'audio']
 
 # http static resource file extension
-static_ext = ['js', 'css', 'ico']
+static_ext = ['js', 'css', 'ico', 'jpg', 'png', 'gif', 'jpeg', 'bmp']
 
 # media resource files type
 media_types = ['image', 'video', 'audio']
