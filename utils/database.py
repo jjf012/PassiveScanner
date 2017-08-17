@@ -4,13 +4,11 @@
 author: ringzero@0x557.org
 home:   http://github.com/ring04h/fpymysql
 desc:   A Friendly pymysql CURD Class
-
 https://dev.mysql.com/doc/connector-python/en/connector-python-reference.html
-
+SQL Injection Warning: pymysql.escape_string(value)
 """
 
 import pymysql
-import pymysql.cursors
 
 
 class MYSQL:
@@ -29,7 +27,7 @@ class MYSQL:
         connection = pymysql.connect(
             host=self.dbhost,
             user=self.dbuser,
-            passwd=self.dbpwd,
+            password=self.dbpwd,
             db=self.dbname,
             charset=self.dbcharset,
             cursorclass=pymysql.cursors.DictCursor)
@@ -37,29 +35,26 @@ class MYSQL:
 
     def insert(self, table, data):
         """mysql insert() function"""
-        cursor = self.connection.cursor()
-        try:
-            params = self.join_field_value(data)
-            sql = "INSERT INTO {table} SET {params}".format(table=table, params=params)
-            result = cursor.execute(sql)
-            self.connection.commit()  # not autocommit
+        with self.connection.cursor() as cursor:
+            params = self.join_field_value(data);
+            sql = "INSERT IGNORE INTO {table} SET {params}".format(table=table, params=params)
 
+            result = cursor.execute(sql, tuple(data.values()))
+            self.connection.commit()
             return result
-        except:
-            import traceback
-            traceback.print_exc()
-            self.connection.rollback()
-        finally:
-            cursor.close()
 
     def delete(self, table, condition=None, limit=None):
-        """mysql delete() function"""
-        cursor = self.connection.cursor()
-        try:
+        """
+        mysql delete() function
+        sql.PreparedStatement method
+        """
+        with self.connection.cursor() as cursor:
+            prepared = []  # PreparedStatement
             if not condition:
                 where = '1'
             elif isinstance(condition, dict):
                 where = self.join_field_value(condition, ' AND ')
+                prepared.extend(condition.values())
             else:
                 where = condition
 
@@ -67,47 +62,77 @@ class MYSQL:
             sql = "DELETE FROM {table} WHERE {where} {limits}".format(
                 table=table, where=where, limits=limits)
 
-            result = cursor.execute(sql)
+            # check PreparedStatement
+            if not prepared:
+                result = cursor.execute(sql)
+            else:
+                result = cursor.execute(sql, tuple(prepared))
+
             self.connection.commit()  # not autocommit
 
             return result
-        except:
-            import traceback
-            traceback.print_exc()
-            self.connection.rollback()
-        finally:
-            cursor.close()
 
-    def update(self, table, data, condition):
-        """mysql update() function"""
-        cursor = self.connection.cursor()
-        try:
+    def update(self, table, data, condition=None):
+        """
+        mysql update() function
+        Use sql.PreparedStatement method
+        """
+        with self.connection.cursor() as cursor:
+            prepared = []  # PreparedStatement
             params = self.join_field_value(data)
+            prepared.extend(data.values())
             if not condition:
                 where = '1'
             elif isinstance(condition, dict):
                 where = self.join_field_value(condition, ' AND ')
+                prepared.extend(condition.values())
             else:
                 where = condition
 
             sql = "UPDATE {table} SET {params} WHERE {where}".format(
                 table=table, params=params, where=where)
 
-            result = cursor.execute(sql)
-            self.connection.commit()  # not autocommit
+            # check PreparedStatement
+            if not prepared:
+                result = cursor.execute(sql)
+            else:
+                result = cursor.execute(sql, tuple(prepared))
 
+            self.connection.commit()  # not autocommit
             return result
-        except:
-            import traceback
-            traceback.print_exc()
-            self.connection.rollback()
-        finally:
-            cursor.close()
+
+    def count(self, table, condition=None):
+        """count database record"""
+        with self.connection.cursor() as cursor:
+            prepared = []  # PreparedStatement
+
+            # WHERE CONDITION
+            if not condition:
+                where = '1'
+            elif isinstance(condition, dict):
+                where = self.join_field_value(condition, ' AND ')
+                prepared.extend(condition.values())
+            else:
+                where = condition
+
+            # SELECT COUNT(*) as cnt
+            sql = "SELECT COUNT(*) as cnt FROM {table} WHERE {where}".format(
+                table=table, where=where)
+
+            # check PreparedStatement, EXECUTE SELECT COUNT sql
+            if not prepared:
+                cursor.execute(sql)
+            else:
+                cursor.execute(sql, tuple(prepared))
+
+            # RETURN cnt RESULT
+            return cursor.fetchone().get('cnt')
 
     def fetch_rows(self, table, fields=None, condition=None, order=None, limit=None, fetchone=False):
         """mysql select() function"""
-        cursor = self.connection.cursor()
-        try:
+        with self.connection.cursor() as cursor:
+            prepared = []  # PreparedStatement
+
             # SELECT FIELDS
             if not fields:
                 fields = '*'
@@ -122,6 +147,7 @@ class MYSQL:
                 where = '1'
             elif isinstance(condition, dict):
                 where = self.join_field_value(condition, ' AND ')
+                prepared.extend(condition.values())
             else:
                 where = condition
 
@@ -134,55 +160,41 @@ class MYSQL:
             # LIMIT NUMS
             limits = "LIMIT {limit}".format(limit=limit) if limit else ""
             sql = "SELECT {fields} FROM {table} WHERE {where} {orderby} {limits}".format(
-                fields=fields,
-                table=table,
-                where=where,
-                orderby=orderby,
-                limits=limits)
+                fields=fields, table=table, where=where, orderby=orderby, limits=limits)
 
-            cursor.execute(sql)
+            # check PreparedStatement
+            if not prepared:
+                cursor.execute(sql)
+            else:
+                cursor.execute(sql, tuple(prepared))
 
             if fetchone:
                 return cursor.fetchone()
             else:
                 return cursor.fetchall()
-        except:
-            import traceback
-            traceback.print_exc()
-            self.connection.rollback()
-        finally:
-            cursor.close()
 
     def query(self, sql, fetchone=False):
         """execute custom sql query"""
-        cursor = self.connection.cursor()
-        try:
+        with self.connection.cursor() as cursor:
             if not sql:
                 return
             cursor.execute(sql)
+            self.connection.commit()  # not auto commit
             if fetchone:
                 return cursor.fetchone()
             else:
                 return cursor.fetchall()
-        except:
-            import traceback
-            traceback.print_exc()
-            self.connection.rollback()
-        finally:
-            cursor.close()
+
+    def join_field_value(self, data, glue=', '):
+        sql = comma = ''
+        for key in data.keys():
+            sql += "{}`{}` = %s".format(comma, key)
+            comma = glue
+        return sql
 
     def close(self):
         if self.connection:
             return self.connection.close()
-
-    def join_field_value(self, data, glue=', '):
-        sql = comma = ''
-        for key, value in data.items():
-            if isinstance(value, str):
-                value = pymysql.escape_string(value)
-            sql += "{}`{}` = \"{}\"".format(comma, key, value)
-            comma = glue
-        return sql
 
     def __del__(self):
         """close mysql database connection"""

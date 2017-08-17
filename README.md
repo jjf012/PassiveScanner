@@ -15,11 +15,11 @@ redis作为celery的broker并且设置了密码。
 
 **更新**
 
-2017/8/16
-增加vuln.sql数据库结构文件
-调整parser里面一些冗余的代码
-将后缀判断移到proxy代码里面
-增加简单的去重功能，归一化后然后hash计算
+使用(预编译查询)[https://github.com/ring04h/fpymysql/commit/fd2084b8601a670cb4ca75d78da46a6ec433cf4b]
+
+
+
+
 
 参考链接
 * [基于Arachni构建黑盒扫描平台](http://bobao.360.cn/learning/detail/3533.html)
@@ -40,11 +40,7 @@ The default port for `proxy.py` is 8080.
 
 **update**
 
-2017/8/16
-add vuln.sql
-Adjust the parser inside some of the redundant code
-Move the suffix judgment to the proxy code
-Increase url, normalized and then hash calculation
+use Mysql (PreparedStatement)[[https://github.com/ring04h/fpymysql/commit/fd2084b8601a670cb4ca75d78da46a6ec433cf4b]]
 
 Reference link
 * [Based on Arachni build black box scanning platform](http://bobao.360.cn/learning/detail/3533.html)

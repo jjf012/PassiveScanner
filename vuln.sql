@@ -31,7 +31,7 @@ CREATE TABLE `vuln` (
   `request_raw` mediumblob,
   `response_raw` mediumblob,
   `severity` varchar(255) DEFAULT NULL,
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 SET FOREIGN_KEY_CHECKS=1;
