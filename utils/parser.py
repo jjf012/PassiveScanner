@@ -1,7 +1,7 @@
-from __future__ import absolute_import
+# from __future__ import absolute_import
 
+import base64
 import re
-# import json
 # import mimetypes
 from config import media_types, static_files, static_ext, save_content
 
@@ -42,7 +42,8 @@ class ResponseParser(object):
         # return result
 
         # result['resp_content'] = self.flow.response.content if save_content else ''
-        result['request_content'] = self.get_request_content() if save_content else ''
+        # result['request_content'] = self.get_request_content() if save_content else ''
+        result['request_content'] = self.flow.request.content
         return result
 
     # def get_content_type(self):
@@ -75,13 +76,13 @@ class ResponseParser(object):
     #     else:
     #         return False
 
-    def get_request_content(self):
-        content = self.flow.request.content
-        if 'multipart/form-data' in self.parser_header(self.flow.request.headers).get('Content-Type', ''):
-            content = self.decode_response_text(content)
-            return self.parser_multipart(content)
-        else:
-            return content
+    # def get_request_content(self):
+    #     content = self.flow.request.content
+    #     if 'multipart/form-data' in self.parser_header(self.flow.request.headers).get('Content-Type', ''):
+    #         content = self.decode_response_text(content)
+    #         return self.parser_multipart(content)
+    #     else:
+    #         return content
 
     # def get_header(self):
     #     return self.parser_header(self.flow.response.headers)

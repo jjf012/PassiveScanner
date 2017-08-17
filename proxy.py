@@ -8,6 +8,7 @@
 """
 import argparse
 import logging
+import redis
 from pprint import pprint
 from mitmproxy import controller, options, master
 from mitmproxy.proxy import ProxyServer, ProxyConfig
@@ -20,12 +21,13 @@ logging.basicConfig(
     level=logging.INFO,  # filename='/tmp/wyproxy.log',
     format='%(asctime)s [%(levelname)s] %(message)s',
 )
+r = redis.Redis(host="localhost", port=6379, password="password")
 
 
 class MyMaster(master.Master):
     def __init__(self, *args, **kwargs):
         super(MyMaster, self).__init__(*args, **kwargs)
-        self.url_seen = set()
+        # self.url_seen = set()
 
     def run(self):
         try:
@@ -77,13 +79,11 @@ class MyMaster(master.Master):
             # if _domain in f.request.host:
             if not self.capture_pass(f):
                 url_id = get_url_hash(f.request.url, f.request.content)
-                if url_id in self.url_seen:
-                    pass
-                else:
-                    self.url_seen.add(url_id)
+                if not r.exists(url_id):
+                    # pprint(result)
+                    r.set(url_id, 1)
                     parser = ResponseParser(f)
                     result = parser.parser_data()
-                    pprint(result)
                     task_id = scan_run.delay(result['url'], headers=result['request_header'],
                                              post_data=result['request_content'] or "")
                     print(task_id)

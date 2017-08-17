@@ -9,8 +9,8 @@ from urllib.parse import parse_qs
 
 app = Celery('tasks')
 app.conf.update(
-    BROKER_URL='redis://:password@localhost:6379/0',
-    CELERY_RESULT_BACKEND='redis://:password@localhost:6379/1',
+    BROKER_URL='redis://:password@localhost:6379/1',
+    CELERY_RESULT_BACKEND='redis://:password@localhost:6379/2',
     CELERY_TASK_SERIALIZER='json',
     CELERY_ACCEPT_CONTENT=['json'],  # Ignore other content
     CELERY_RESULT_SERIALIZER='json',
